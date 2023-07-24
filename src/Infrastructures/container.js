@@ -19,6 +19,8 @@ const CommentRepository = require('../Domains/comments/CommentRepository');
 const CommentRepositoryPostgres = require('./repository/CommentRepositoryPostgres');
 const CommentRepliesRepository = require('../Domains/replies/CommentRepliesRepository');
 const CommentRepliesRepositoryPostgres = require('./repository/CommentRepliesRepositoryPostgres');
+const CommentLikesRepository = require('../Domains/likes/CommentLikesRepository');
+const CommentLikesRepositoryPostgres = require('./repository/CommentLikesRepositoryPostgres');
 
 // use case
 const AddUserUseCase = require('../Applications/use_case/AddUserUseCase');
@@ -35,6 +37,7 @@ const DeleteCommentUseCase = require('../Applications/use_case/DeleteCommentUseC
 const GetThreadUseCase = require('../Applications/use_case/GetThreadUseCase');
 const AddCommentRepliesUseCase = require('../Applications/use_case/AddCommentRepliesUseCase');
 const DeleteCommentRepliesUseCase = require('../Applications/use_case/DeleteCommentRepliesUseCase');
+const PutCommentLikesUseCase = require('../Applications/use_case/PutCommentLikesUseCase');
 
 // creating container
 const container = createContainer();
@@ -126,6 +129,17 @@ container.register([
         },
         {
           concrete: nanoid,
+        },
+      ],
+    },
+  },
+  {
+    key: CommentLikesRepository.name,
+    Class: CommentLikesRepositoryPostgres,
+    parameter: {
+      dependencies: [
+        {
+          concrete: pool,
         },
       ],
     },
@@ -237,6 +251,10 @@ container.register([
           name: 'commentRepliesRepository',
           internal: CommentRepliesRepository.name,
         },
+        {
+          name: 'commentLikesRepository',
+          internal: CommentLikesRepository.name,
+        },
       ],
     },
   },
@@ -312,6 +330,27 @@ container.register([
         {
           name: 'commentRepliesRepository',
           internal: CommentRepliesRepository.name,
+        },
+      ],
+    },
+  },
+  {
+    key: PutCommentLikesUseCase.name,
+    Class: PutCommentLikesUseCase,
+    parameter: {
+      injectType: 'destructuring',
+      dependencies: [
+        {
+          name: 'threadRepository',
+          internal: ThreadRepository.name,
+        },
+        {
+          name: 'commentRepository',
+          internal: CommentRepository.name,
+        },
+        {
+          name: 'commentLikesRepository',
+          internal: CommentLikesRepository.name,
         },
       ],
     },
