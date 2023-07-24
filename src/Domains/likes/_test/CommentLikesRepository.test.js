@@ -9,5 +9,6 @@ describe('A CommentLikesRepository interace', () => {
     await expect(commentLikesRepository.checkCommentLike({})).rejects.toThrowError('COMMENT_LIKES_REPOSITORY.METHOD_NOT_IMPLEMENTED');
     await expect(commentLikesRepository.putCommentLike({})).rejects.toThrowError('COMMENT_LIKES_REPOSITORY.METHOD_NOT_IMPLEMENTED');
     await expect(commentLikesRepository.putCommentUnlike({})).rejects.toThrowError('COMMENT_LIKES_REPOSITORY.METHOD_NOT_IMPLEMENTED');
+    await expect(commentLikesRepository.likesCountByCommentId({})).rejects.toThrowError('COMMENT_LIKES_REPOSITORY.METHOD_NOT_IMPLEMENTED');
   });
 });

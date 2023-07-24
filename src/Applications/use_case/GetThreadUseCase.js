@@ -6,10 +6,12 @@ class GetThreadUseCase {
     threadRepository,
     commentRepository,
     commentRepliesRepository,
+    commentLikesRepository,
   }) {
     this._threadRepository = threadRepository;
     this._commentRepository = commentRepository;
     this._commentRepliesRepository = commentRepliesRepository;
+    this._commentLikesRepository = commentLikesRepository;
   }
 
   async execute(useCasePayload) {
@@ -23,6 +25,8 @@ class GetThreadUseCase {
       const commentReplies = await Promise.all(comments.map(async (comment) => {
         const modifiedComment = comment.is_delete ? '**komentar telah dihapus**' : comment.content;
         const getComment = new GetComment({ ...comment, content: modifiedComment });
+        const likeCount = await this._commentLikesRepository
+          .likesCountByCommentId(comment.id);
         const getReplies = await this._commentRepliesRepository
           .getCommentRepliesByCommentId(comment.id);
         if (getReplies) {
@@ -31,10 +35,10 @@ class GetThreadUseCase {
             return new GetCommentReplies({ ...reply, content: modifiedReply });
           });
           return {
-            ...getComment, replies,
+            ...getComment, likeCount, replies,
           };
         }
-        return { ...getComment };
+        return { ...getComment, likeCount };
       }));
       thread.comments = commentReplies;
     }
